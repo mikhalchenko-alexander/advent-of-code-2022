@@ -4,7 +4,7 @@ import java.io.File
 
 // https://adventofcode.com/2022/day/1
 fun main() {
-    val elfsData = File("src/main/kotlin/com/anahoret/aoc2022/day01/input1.txt")
+    val elfsData = File("src/main/kotlin/com/anahoret/aoc2022/day01/input.txt")
         .readText()
         .split("\n\n")
 
