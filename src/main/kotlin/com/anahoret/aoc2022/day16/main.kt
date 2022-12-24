@@ -18,7 +18,8 @@ fun parse(str: String): List<Valve> {
 private fun findBestScore(
     valves: List<Valve>,
     totalTime: Int,
-    distanceCalculator: DistanceCalculator
+    distanceCalculator: DistanceCalculator,
+    threshold: Long = -1
 ): Long {
     var maxRelease = 0L
 
@@ -40,7 +41,7 @@ private fun findBestScore(
 
         val potentialRelease = released + 2 * visitedReleasePerTick + (timeLeft - 2) * totalReleaseOfAllValves
 
-        if (potentialRelease <= maxRelease) {
+        if (potentialRelease <= maxRelease || potentialRelease <= threshold) {
             return
         }
 
@@ -139,11 +140,16 @@ private fun part2(valves: List<Valve>, distanceCalculator: DistanceCalculator) =
             (listOf(start) + left) to (listOf(start) + nonZeroValves.filter { it !in left })
         }
 
-    candidates.maxOfOrNull { (l, r) ->
-        val lScore = findBestScore(l, totalTime = 26, distanceCalculator)
-        val rScore = findBestScore(r, totalTime = 26, distanceCalculator)
-        lScore + rScore
+    candidates.fold(0L) { maxRelease, (l, r) ->
+        val release = if (l.size < r.size) {
+            val ls = findBestScore(l, totalTime = 26, distanceCalculator)
+            val rs = findBestScore(r, totalTime = 26, distanceCalculator, threshold = maxRelease - ls)
+            ls + rs
+        } else {
+            val rs = findBestScore(r, totalTime = 26, distanceCalculator)
+            val ls = findBestScore(l, totalTime = 26, distanceCalculator, threshold = maxRelease - rs)
+            ls + rs
+        }
+        max(maxRelease, release)
     }.also(::println)
 }
-
-
