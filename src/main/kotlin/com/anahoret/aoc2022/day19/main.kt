@@ -2,6 +2,7 @@ package com.anahoret.aoc2022.day19
 
 import java.io.File
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 typealias ResourcePile = Map<Resource, Int>
@@ -13,7 +14,7 @@ enum class Resource(val priority: Int) {
     GEODE(3)
 }
 
-class Blueprint(val id: Int, private val robotCosts: Map<Resource, ResourcePile>) {
+class Blueprint(val id: Int, val robotCosts: Map<Resource, ResourcePile>) {
     companion object {
         private val blueprintRegex =
             "Blueprint (.*): Each ore robot costs (.*) ore. Each clay robot costs (.*) ore. Each obsidian robot costs (.*) ore and (.*) clay. Each geode robot costs (.*) ore and (.*) obsidian.".toRegex()
@@ -99,6 +100,10 @@ data class CacheEntry(
 
 fun evaluate(blueprint: Blueprint, time: Int): Int {
 
+    val maxOrePrice = blueprint.robotCosts.maxOf { it.value[Resource.ORE] ?: 0 }
+    val maxClayPrice = blueprint.robotCosts.maxOf { it.value[Resource.CLAY] ?: 0 }
+    val maxObsidianPrice = blueprint.robotCosts.maxOf { it.value[Resource.OBSIDIAN] ?: 0 }
+
     val resourcesSortedByPriority = Resource.values()
         .sortedByDescending(Resource::priority) + null
 
@@ -118,6 +123,8 @@ fun evaluate(blueprint: Blueprint, time: Int): Int {
         robotObsidian: Int,
         robotGeode: Int
     ) {
+        if (robotOre > maxOrePrice || robotClay > maxClayPrice || robotObsidian > maxObsidianPrice) return
+
         if (timeLeft == 0) {
             maxGeodes = max(maxGeodes, storageGeode)
             return
@@ -147,6 +154,10 @@ fun evaluate(blueprint: Blueprint, time: Int): Int {
         val postProdObsidian = storageObsidian + robotObsidian
         val postProdGeode = storageGeode + robotGeode
 
+        val canSpendOre = maxOrePrice * timeLeft
+        val canSpendClay = maxClayPrice * timeLeft
+        val canSpendObsidian = maxObsidianPrice * timeLeft
+
         resourcesSortedByPriority.forEach { robotTypeToBuild ->
             if (robotTypeToBuild != null) {
                 val cost = blueprint.getCost(robotTypeToBuild)
@@ -169,9 +180,9 @@ fun evaluate(blueprint: Blueprint, time: Int): Int {
                 loop(
                     timeLeft - 1,
 
-                    newStorageOre,
-                    newStorageClay,
-                    newStorageObsidian,
+                    min(canSpendOre, newStorageOre),
+                    min(canSpendClay, newStorageClay),
+                    min(canSpendObsidian, newStorageObsidian),
                     newStorageGeode,
 
                     newRobotOre,
@@ -182,10 +193,12 @@ fun evaluate(blueprint: Blueprint, time: Int): Int {
             } else {
                 loop(
                     timeLeft - 1,
-                    postProdOre,
-                    postProdClay,
-                    postProdObsidian,
+
+                    min(canSpendOre, postProdOre),
+                    min(canSpendClay, postProdClay),
+                    min(canSpendObsidian, postProdObsidian),
                     postProdGeode,
+
                     robotOre,
                     robotClay,
                     robotObsidian,
