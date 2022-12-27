@@ -1,7 +1,6 @@
 package com.anahoret.aoc2022.day20
 
 import java.io.File
-import kotlin.math.abs
 import kotlin.system.measureTimeMillis
 
 data class NumberContainer(val initialIndex: Int, val value: Long)
@@ -48,7 +47,7 @@ private fun part2(numbers: Array<NumberContainer>) = measureTimeMillis {
 private fun calcResult(numbers: Array<NumberContainer>): Long {
     val zeroIdx = numbers.indexOfFirst { it.value == 0L }
     return listOf(1000, 2000, 3000)
-        .sumOf { numbers[calculateEndIndex(zeroIdx, it, numbers.size)].value }
+        .sumOf { numbers[calculateEndIndex(zeroIdx, it.toLong(), numbers.size)].value }
 }
 
 private fun mix(numbers: Array<NumberContainer>) {
@@ -59,7 +58,7 @@ private fun mix(numbers: Array<NumberContainer>) {
 }
 
 private fun <T> Array<T>.shift(idx: Int, amount: Long) {
-    val endIndex = calculateShiftCycledIndex(idx, amount, size)
+    val endIndex = calculateEndIndex(idx, amount, size - 1)
     val tmp = this[idx]
     when {
         endIndex > idx -> (idx until endIndex).forEach { i -> this[i] = this[i + 1] }
@@ -68,28 +67,11 @@ private fun <T> Array<T>.shift(idx: Int, amount: Long) {
     this[endIndex] = tmp
 }
 
-private fun calculateEndIndex(idx: Int, amount: Int, size: Int): Int {
+private fun calculateEndIndex(idx: Int, amount: Long, size: Int): Int {
     val endIndex = idx + amount
     return when {
         endIndex in 0 until size -> endIndex
-        endIndex < 0 -> (size + endIndex % size) % size
+        endIndex < 0 -> (endIndex % size) + size
         else -> endIndex % size
-    }
-}
-
-private fun calculateShiftCycledIndex(idx: Int, amount: Long, size: Int): Int {
-    val endIndex = idx + amount
-    return when {
-        endIndex == 0L -> size - 1
-        endIndex == size - 1L -> 0
-        endIndex in 0 until size -> endIndex.toInt()
-        endIndex < 0 -> {
-            val transfers = abs(endIndex / size.dec()) + 1
-            (size + (endIndex - transfers) % size) % size
-        }
-        else -> {
-            val transfers = endIndex / size.dec()
-            (endIndex + transfers) % size
-        }
     }.toInt()
 }
