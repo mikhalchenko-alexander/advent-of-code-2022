@@ -71,7 +71,7 @@ private fun calculateEndIndex(idx: Int, amount: Long, size: Int): Int {
     val endIndex = idx + amount
     return when {
         endIndex in 0 until size -> endIndex
-        endIndex < 0 -> (endIndex % size) + size
+        endIndex < 0 -> ((endIndex % size) + size) % size
         else -> endIndex % size
     }.toInt()
 }
