@@ -1,5 +1,6 @@
 package com.anahoret.aoc2022.day20
 
+import com.anahoret.aoc2022.calculateEndIndex
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -65,13 +66,4 @@ private fun <T> Array<T>.shift(idx: Int, amount: Long) {
         else -> (idx downTo endIndex.inc()).forEach { i -> this[i] = this[i - 1] }
     }
     this[endIndex] = tmp
-}
-
-private fun calculateEndIndex(idx: Int, amount: Long, size: Int): Int {
-    val endIndex = idx + amount
-    return when {
-        endIndex in 0 until size -> endIndex
-        endIndex < 0 -> ((endIndex % size) + size) % size
-        else -> endIndex % size
-    }.toInt()
 }
