@@ -70,10 +70,6 @@ fun parseMonkeys(str: String): WaitingMonkey {
     return parse(rootName, nameDataMap.getValue(rootName)) as WaitingMonkey
 }
 
-//84244467642604
-//P1: 0ms
-//3759569926192
-//P2: 1ms
 
 fun main() {
     val input = File("src/main/kotlin/com/anahoret/aoc2022/day21/input.txt")
