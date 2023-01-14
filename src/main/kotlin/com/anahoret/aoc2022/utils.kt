@@ -34,7 +34,7 @@ interface ManhattanDistanceAware {
 
 data class Vector3Int(val x: Int, val y: Int, val z: Int) {
     companion object {
-        val RIGTH = Vector3Int(1, 0, 0)
+        val RIGHT = Vector3Int(1, 0, 0)
         val FORWARD = Vector3Int(0, 1, 0)
         val UP = Vector3Int(0, 0, 1)
         val LEFT = Vector3Int(-1, 0, 0)

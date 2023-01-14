@@ -11,7 +11,7 @@ class CubeSolver(private val input: String) {
 
     fun solve(): List<Int> {
         val (cube, path) = parseInputToCube(input)
-        val currentPos = Position3D(0, 0, 0, Vector3Int.RIGTH, CubeSide.BOTTOM)
+        val currentPos = Position3D(0, 0, 0, Vector3Int.RIGHT, CubeSide.BOTTOM)
 
         path.actions.forEach {
             currentPos.move(cube, it)
@@ -25,7 +25,7 @@ class CubeSolver(private val input: String) {
             }
         val facing = when (unfolded3dFacing) {
             Vector3Int.LEFT -> Direction.LEFT
-            Vector3Int.RIGTH -> Direction.RIGHT
+            Vector3Int.RIGHT -> Direction.RIGHT
             Vector3Int.BACKWARD -> Direction.UP
             Vector3Int.FORWARD -> Direction.DOWN
             else -> throw RuntimeException("Unsupported facing $unfolded3dFacing")
@@ -60,7 +60,7 @@ private data class Tile3D(val tile: Tile, var cubeSide: CubeSide, var pos: Vecto
     private fun updateCubeSide() {
         cubeSide = when (normal.round()) {
             Vector3Int.LEFT -> CubeSide.LEFT
-            Vector3Int.RIGTH -> CubeSide.RIGHT
+            Vector3Int.RIGHT -> CubeSide.RIGHT
             Vector3Int.UP -> CubeSide.TOP
             Vector3Int.DOWN -> CubeSide.BOTTOM
             Vector3Int.FORWARD -> CubeSide.FRONT
@@ -167,7 +167,7 @@ private class Cube(size: Int, tiles: List<Tile3D>) {
                 foldCube(
                     { it.y.roundToInt() < 0 }, Vector3.FORWARD, mapOf(
                         Vector3Int.LEFT to RotationAxis.ZCW,
-                        Vector3Int.RIGTH to RotationAxis.ZCCW,
+                        Vector3Int.RIGHT to RotationAxis.ZCCW,
                         Vector3Int.UP to RotationAxis.XCW,
                         Vector3Int.DOWN to RotationAxis.XCCW
                     )
@@ -175,7 +175,7 @@ private class Cube(size: Int, tiles: List<Tile3D>) {
                 foldCube(
                     { it.y.roundToInt() > cubeRange.last }, Vector3.BACKWARD, mapOf(
                         Vector3Int.LEFT to RotationAxis.ZCCW,
-                        Vector3Int.RIGTH to RotationAxis.ZCW,
+                        Vector3Int.RIGHT to RotationAxis.ZCW,
                         Vector3Int.UP to RotationAxis.XCCW,
                         Vector3Int.DOWN to RotationAxis.XCW
                     )
@@ -183,7 +183,7 @@ private class Cube(size: Int, tiles: List<Tile3D>) {
                 foldCube(
                     { it.z.roundToInt() < 0 }, Vector3.UP, mapOf(
                         Vector3Int.LEFT to RotationAxis.YCCW,
-                        Vector3Int.RIGTH to RotationAxis.YCW,
+                        Vector3Int.RIGHT to RotationAxis.YCW,
                         Vector3Int.BACKWARD to RotationAxis.XCW,
                         Vector3Int.FORWARD to RotationAxis.XCCW
                     )
@@ -191,7 +191,7 @@ private class Cube(size: Int, tiles: List<Tile3D>) {
                 foldCube(
                     { it.z.roundToInt() > cubeRange.last }, Vector3.DOWN, mapOf(
                         Vector3Int.LEFT to RotationAxis.YCW,
-                        Vector3Int.RIGTH to RotationAxis.YCCW,
+                        Vector3Int.RIGHT to RotationAxis.YCCW,
                         Vector3Int.BACKWARD to RotationAxis.XCCW,
                         Vector3Int.FORWARD to RotationAxis.XCW
                     )
@@ -296,7 +296,7 @@ private fun Position3D.move(cube: Cube, action: Action) {
                 direction3d = when (cubeSide) {
                     CubeSide.BOTTOM -> Vector3Int.UP
                     CubeSide.TOP -> Vector3Int.DOWN
-                    CubeSide.LEFT -> Vector3Int.RIGTH
+                    CubeSide.LEFT -> Vector3Int.RIGHT
                     CubeSide.RIGHT -> Vector3Int.LEFT
                     else -> throw RuntimeException("Unsupported transfer: $cubeSide ${CubeSide.FRONT}")
                 }
@@ -312,7 +312,7 @@ private fun Position3D.move(cube: Cube, action: Action) {
                 direction3d = when (cubeSide) {
                     CubeSide.BOTTOM -> Vector3Int.UP
                     CubeSide.TOP -> Vector3Int.DOWN
-                    CubeSide.LEFT -> Vector3Int.RIGTH
+                    CubeSide.LEFT -> Vector3Int.RIGHT
                     CubeSide.RIGHT -> Vector3Int.LEFT
                     else -> throw RuntimeException("Unsupported transfer: $cubeSide ${CubeSide.BACK}")
                 }
@@ -326,7 +326,7 @@ private fun Position3D.move(cube: Cube, action: Action) {
             z < cube.maxIndex && cube.tileAt(x, y, z + 1, cubeSide) is OpenTile -> z += 1
             z == cube.maxIndex && cube.tileAt(x, y, z, CubeSide.TOP) is OpenTile -> {
                 direction3d = when (cubeSide) {
-                    CubeSide.LEFT -> Vector3Int.RIGTH
+                    CubeSide.LEFT -> Vector3Int.RIGHT
                     CubeSide.RIGHT -> Vector3Int.LEFT
                     CubeSide.FRONT -> Vector3Int.BACKWARD
                     CubeSide.BACK -> Vector3Int.FORWARD
@@ -342,7 +342,7 @@ private fun Position3D.move(cube: Cube, action: Action) {
             z > 0 && cube.tileAt(x, y, z - 1, cubeSide) is OpenTile -> z -= 1
             z == 0 && cube.tileAt(x, y, z, CubeSide.BOTTOM) is OpenTile -> {
                 direction3d = when (cubeSide) {
-                    CubeSide.LEFT -> Vector3Int.RIGTH
+                    CubeSide.LEFT -> Vector3Int.RIGHT
                     CubeSide.RIGHT -> Vector3Int.LEFT
                     CubeSide.FRONT -> Vector3Int.BACKWARD
                     CubeSide.BACK -> Vector3Int.FORWARD
@@ -357,7 +357,7 @@ private fun Position3D.move(cube: Cube, action: Action) {
         repeat(steps) {
             when (direction3d) {
                 Vector3Int.LEFT -> moveLeft()
-                Vector3Int.RIGTH -> moveRight()
+                Vector3Int.RIGHT -> moveRight()
                 Vector3Int.UP -> moveUp()
                 Vector3Int.DOWN -> moveDown()
                 Vector3Int.FORWARD -> moveForward()
