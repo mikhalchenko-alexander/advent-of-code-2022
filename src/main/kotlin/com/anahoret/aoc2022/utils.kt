@@ -122,13 +122,3 @@ operator fun Double.times(v: Vector3): Vector3 {
 
 fun Int.degToRad() = degToRad(this.toDouble())
 fun degToRad(deg: Double) = Math.toRadians(deg)
-
-//fun main() {
-//    val v = Vector3(1, 0, 0)
-//    val ap = Vector3(0, 0, 1)
-//    val an = Vector3(0, 0, -1)
-//    val vrp = v.rotateAround(ap, 90.degToRad()).round()
-//    val vrn = v.rotateAround(an, 90.degToRad()).round()
-//    println(vrp)
-//    println(vrn)
-//}
